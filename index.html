@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <title>My Chatbot</title>
+    <style>
+      /* Add some style to the page */
+      body {
+        background-color: lightgray;
+        font-family: Arial, sans-serif;
+      }
+      #phone {
+        width: 300px;
+        height: 500px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        margin: auto;
+        margin-top: 50px;
+      }
+      #header {
+        background-color: #3498db;
+        color: white;
+        height: 50px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        text-align: center;
+        line-height: 50px;
+        font-size: 18px;
+      }
+      #chatlogs {
+        padding: 10px;
+        height: 350px;
+        overflow-y: scroll;
+      }
+      .chat {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .self {
+        background-color: #e74c3c;
+        float: right;
+        color: white;
+      }
+      .bot {
+        background-color: #2ecc71;
+        float: left;
+        color: white;
+      }
+      #chat-form {
+        background-color: white;
+        padding: 10px;
+        height: 90px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        display: flex;
+        align-items: center;
+      }
+      #user-input {
+        flex-grow: 1;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      #send-button {
+        background-color: #3498db;
+        border: none;
+        color: white;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #send-button:hover {
+        background-color: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="phone">
+      <div id="header">My Chatbot</div>
+      <div id="chatlogs">
+        <div class="chat self">
+          Hi, I'm a chatbot. How can I help you today?
+        </div>
+      </div>
+      <div id="chat-form">
+        <textarea id="user-input"></textarea>
+        <button id="send-button">Send</button>
+      </div>
+    </div>
+    <script>
+      // Send user input to chatbot and display response
+      function sendMessage() {
+        // Get user input
+        var input = document.getElementById("user-input").value;
+        // Clear user input
+        document.getElementById("user-input").value = "";
+        // Add user input to chatlogs
+        var chatlogs = document.getElementById("chatlogs");
+        chatlogs.innerHTML += '<div class="chat self">' + input + '</div>';
+        // Send user input to chatbot and get response
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/get?msg=" + input, true);
+        xhr.onload = function(e) {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              // Add chatbot response to chatlogs
+              chatlogs.innerHTML += '<div class="chat bot">' + xhr.responseText + '</div>';
+            } else {
+              console.error(xhr.statusText);
+            }
+          }
+        };
+        xhr.onerror = function (e) {
+          console.error(xhr.statusText);
+        };
+        xhr.send(null);
+      }
+      // Send message when user clicks send button
+      var sendButton = document.getElementById("send-button");
+      sendButton.addEventListener("click", sendMessage);
+      // Send message when user presses enter key
+      var userInput = document.getElementById("user-input");
+      userInput.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          sendMessage();
+        }
+      });
+    </script>
+  </body>
+</html>
